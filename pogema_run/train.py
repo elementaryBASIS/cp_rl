@@ -25,17 +25,13 @@ parser.add_argument('-t', '--tsteps',
                     help='number of timesteps (default: 1e6)')
 
 # Define random configuration
-grid_config = GridConfig(num_agents=2, # количество агентов на карте
-                         size=8,      # размеры карты
+grid_config = GridConfig(num_agents=1, # количество агентов на карте
+                         size=2,      # размеры карты
                          density=0.3,  # плотность препятствий
                          seed=1,       # сид генерации задания 
                          max_episode_steps=256,  # максимальная длина эпизода
                          obs_radius=5, # радиус обзора
                         )
-
-def step(action):
-    return action
-
 
 if __name__ == "__main__":
 
@@ -49,7 +45,7 @@ if __name__ == "__main__":
     from wrappers.labirinth import Wrapper as BASISwrapper
 
 
-    env = gym.make("Pogema-v0", grid_config=grid_config)
+    env = gym.make("Pogema-8x8-easy-v0", integration="SampleFactory",)
     
     from hyperparams import PPO1 as hyperparams
     if args is not None:
@@ -59,8 +55,8 @@ if __name__ == "__main__":
     tensorboard_path = "tensorboard_log/"
 
     # Create the evaluation environment and callbacks
+    #train_env = AnimationMonitor(env)
     train_env = BASISwrapper(env)
-    train_env = AnimationMonitor(train_env)
     train_env = Monitor(train_env)
 
     callbacks = [EvalCallback(train_env, best_model_save_path=save_path)]
@@ -71,11 +67,10 @@ if __name__ == "__main__":
             save_freq=100000, save_path=save_path, name_prefix="rl_model"
         )
     )
-    print(train_env.observation_space)
-
     #n_actions = train_env.action_space.shape[0]
 
     train_env.reset()
+
     model = PPO('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
 
     try:

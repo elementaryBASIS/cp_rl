@@ -22,7 +22,7 @@ parser.add_argument('--headless',
 
 parser.add_argument('-t', '--tsteps', 
                     type=float, 
-                    default=1e6,
+                    default=10e6,
                     help='number of timesteps (default: 1e6)')
 
 # Define random configuration

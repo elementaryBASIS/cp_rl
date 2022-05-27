@@ -1,0 +1,14 @@
+__pychache__
+README.md
+~*
+*~
+*.pyc
+tensorboard_log/
+trained_models/
+screencast/
+models/
+*.zip
+.DS_Store
+.vscode/
+rl_skills/
+rl-starter-files/

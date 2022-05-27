@@ -16,7 +16,7 @@ class Wrapper(gym.Wrapper):
             observation=gym.spaces.Box(0.0, 1.0, shape=(3, 11, 11), dtype='float32')
         ))
         self.action_space = gym.spaces.MultiDiscrete([5])
-        print(self.action_space)
+        #print(self.action_space)
         #self.observation_space =  gym.spaces.Box(0.0, 1.0, shape=(3, 11, 11), dtype='float32')
         self.env = env
     def _obs(self):
@@ -30,7 +30,7 @@ class Wrapper(gym.Wrapper):
         #next_state =next_state[0]
         next_state = {'observation': next_state[0]}
         rew = -np.linalg.norm(np.array(self.env.get_targets_xy()[0]) - np.array(self.env.get_agents_xy()[0])) + self.delta - self.steps * 0.2
-        print(rew)
+        #print(rew)
         #self.env.render()
         return next_state, rew, done[0], info[0]
 

@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 from stable_baselines3 import PPO
+from stable_baselines3 import A2C
 from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
 from stable_baselines3.common.monitor import Monitor
@@ -47,7 +48,8 @@ if __name__ == "__main__":
 
     env = gym.make("Pogema-8x8-easy-v0", integration="SampleFactory",)
     
-    from hyperparams import PPO1 as hyperparams
+    #from hyperparams import PPO1 as hyperparams
+    from hyperparams import A2C1 as hyperparams
     if args is not None:
         headless = args.headless
 
@@ -71,7 +73,7 @@ if __name__ == "__main__":
 
     train_env.reset()
 
-    model = PPO('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
+    model = A2C('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
 
     try:
         model.learn(N_TIMESTEPS, callback=callbacks)

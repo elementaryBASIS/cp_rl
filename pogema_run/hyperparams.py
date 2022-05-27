@@ -16,3 +16,4 @@ PPO1 =  dict(
             net_arch=[dict(pi=[32, 32],
                            vf=[32, 32])]),
     )
+A2C1 = dict()

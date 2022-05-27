@@ -29,13 +29,14 @@ class Wrapper(gym.Wrapper):
         next_state, reward, done, info = self.env.step(action)
         #next_state =next_state[0]
         next_state = {'observation': next_state[0]}
-        rew = -np.linalg.norm(np.array(self.env.get_targets_xy()[0]) - np.array(self.env.get_agents_xy()[0])) - self.steps * 0.2
+        rew = -np.linalg.norm(np.array(self.env.get_targets_xy()[0]) - np.array(self.env.get_agents_xy()[0])) + self.delta - self.steps * 0.2
         print(rew)
-        self.env.render()
+        #self.env.render()
         return next_state, rew, done[0], info[0]
 
 
     def reset(self, **kwargs):
         state = self.env.reset(**kwargs)
         self.steps = 0
+        self.delta = np.linalg.norm(np.array(self.env.get_targets_xy()[0]) - np.array(self.env.get_agents_xy()[0]))
         return {'observation': state[0]}

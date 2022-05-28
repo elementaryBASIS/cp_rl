@@ -9,14 +9,15 @@ class FileReader():
 
     def __generateConfig(self, f):
         line = f.split(' ')
-
+        
         return {
-            'num_agents':line[0],
-            'density':line[1],
-            'seed': line[2],
-            'size': line[3],
-            'max_episode_steps': line[4],
-            'obs_radius': line[5]
+            'last_result':float(line[0]),
+            'num_agents':int(line[1]),
+            'size': int(line[2]),
+            'density':float(line[3]),
+            'seed': int(line[4]),
+            'max_episode_steps': int(line[5]),
+            'obs_radius': int(line[6])
         }
 
     def next(self):
@@ -24,6 +25,7 @@ class FileReader():
         line = self.file.readline()
 
         if line == '':
+            self.file.close()
             return
 
         self.currentConfig = self.__generateConfig(line)
@@ -38,4 +40,5 @@ class FileReader():
         return gridConfig
 
     def evaluateCurrentTest(self, mark):
+        print('[INFO][COMPARISON]', mark-self.currentConfig['last_result'])
         return

@@ -22,7 +22,7 @@ class Simulation:
         env = gym.make("Pogema-v0", grid_config=grid_config)
         obs = env.reset()
         
-        print('[INFO][EPOCH CONFIG]', grid_config)
+        #print('[INFO][EPOCH CONFIG]', grid_config)
 
         solver = self.modelClass()
         done = [False for k in range(len(obs))]
@@ -46,11 +46,12 @@ class Simulation:
             info = self.simulate()
 
             if self.stopFlag:
+                print('Stop flag')
                 return
 
             self.input.evaluateCurrentTest(statistics.fmean([info[i]['metrics']['ISR'] for i in range(len(info))]))
 
-            print('[INFO][EPOCH][',i+1,'] Result: ', info)
+            #print('[INFO][EPOCH][',i+1,'] Result: ', info)
 
             csr.append(info[0]['metrics']['CSR'])
             isr.extend([info[i]['metrics']['ISR'] for i in range(len(info))])

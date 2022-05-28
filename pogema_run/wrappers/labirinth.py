@@ -26,7 +26,9 @@ class Wrapper(gym.Wrapper):
     def step(self, action):
         self.steps += 1
         #action = np.int0(action)
-        actions = [0] * self.env.config.num_agents
+        actions = []
+        for i in range(self.env.config.num_agents):
+            actions.append(np.random.randint(0, 5))
         actions[0] = int(action)
         next_state, reward, done, info = self.env.step(actions)
         #next_state =next_state[0]
@@ -54,10 +56,12 @@ class Wrapper(gym.Wrapper):
             for j in range(len(self.grid.obstacles)):
                 if self.grid.obstacles[i][j]:
                     image[i][j] = [255, 0, 0]
-        for i in self.grid.positions_xy:
-            image[i[0]][i[1]] = [0, 0, 255]
-        for i in self.grid.finishes_xy:
-            image[i[0]][i[1]] = [0, 255, 0]
+        image[self.grid.positions_xy[0][0]][self.grid.positions_xy[0][1]] = [0, 0, 255]
+        image[self.grid.finishes_xy[0][0]][self.grid.finishes_xy[0][1]] = [0, 255, 0]
+        for i in self.grid.positions_xy[1:]:
+            image[i[0]][i[1]] = [0, 50, 150]
+        for i in self.grid.finishes_xy[1:]:
+            image[i[0]][i[1]] = [0, 150, 50]
         
         cv.imshow("field", cv.resize(image, (400, 400), interpolation = cv.INTER_AREA))
         #cv.imshow("field", image)

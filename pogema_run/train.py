@@ -26,11 +26,11 @@ parser.add_argument('-t', '--tsteps',
                     help='number of timesteps (default: 1e6)')
 
 # Define random configuration
-grid_config = GridConfig(num_agents=1, # количество агентов на карте
+grid_config = GridConfig(num_agents=6, # количество агентов на карте
                          size=64,      # размеры карты
-                         density = 0.4,  # плотность препятствий
+                         density = 0.35,  # плотность препятствий
                          seed=None,       # сид генерации задания 
-                         max_episode_steps=200,  # максимальная длина эпизода
+                         max_episode_steps=150,  # максимальная длина эпизода
                          obs_radius=5, # радиус обзора
                         )
 
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     tensorboard_path = "tensorboard_log/"
 
     # Create the evaluation environment and callbacks
-    #train_env = AnimationMonitor(env)
-    train_env = BASISwrapper(env)
+    train_env = AnimationMonitor(env)
+    train_env = BASISwrapper(env, headless)
     train_env = Monitor(train_env)
 
     callbacks = [EvalCallback(train_env, best_model_save_path=save_path)]
@@ -73,10 +73,11 @@ if __name__ == "__main__":
 
     train_env.reset()
 
-    #model = PPO('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
-    model = PPO.load("models.zip", env=train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
+    model = PPO('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
+    #model = PPO.load("models.zip", env=train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
     try:
-        model.learn(N_TIMESTEPS, callback=callbacks,  reset_num_timesteps = False)
+        model.learn(N_TIMESTEPS, callback=callbacks)
+        #model.learn(N_TIMESTEPS, callback=callbacks,  reset_num_timesteps = False)
     except KeyboardInterrupt:
         pass
     print(f"Saving to {save_path}.zip")

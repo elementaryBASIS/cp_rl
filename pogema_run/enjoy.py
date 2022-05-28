@@ -34,8 +34,8 @@ def play_episode(episode_id, headless = False):
 
 # Define random configuration
 grid_config = GridConfig(num_agents=1, # количество агентов на карте
-                         size=60,      # размеры карты
-                         density = 0.2,  # плотность препятствий
+                         size=64,      # размеры карты
+                         density = 0.35,  # плотность препятствий
                          seed=None,       # сид генерации задания 
                          max_episode_steps=100,  # максимальная длина эпизода
                          obs_radius=5, # радиус обзора

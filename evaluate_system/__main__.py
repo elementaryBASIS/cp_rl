@@ -1,14 +1,14 @@
 import gym
 from pogema.animation import AnimationMonitor
 from pogema import GridConfig
+from generator import Generator, Configurator
 from model import Model
-from simulation import Config, Simulation
+from simulation import Simulation
 
 def main():
 
-    testConfig = Config(min_agents=10, min_size=16, max_episode_steps=256)
-    simulation = Simulation(Model, config=testConfig)
-    simulation.evaluate(1000)
+    simulation = Simulation(Model, Generator(configurator=Configurator(min_agents=1000, min_size=64, max_size=64)))
+    simulation.evaluate(10)
 
 
 if __name__ == '__main__':

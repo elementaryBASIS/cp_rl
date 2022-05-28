@@ -68,3 +68,5 @@ RUN pip install optuna
 RUN pip install plotly
 RUN pip install pogema
 RUN pip install gym-minigrid
+RUN pip install opencv-contrib-python
+RUN apt install -y x11-apps

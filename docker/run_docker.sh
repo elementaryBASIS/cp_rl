@@ -8,7 +8,7 @@ if [[ $1 = "--nvidia" ]] || [[ $1 = "-n" ]]
   then
     docker run --gpus all \
                 -ti --rm \
-                -e DISPLAY=host.docker.internal:0 \
+                -e "DISPLAY" \
                 -e "QT_X11_NO_MITSHM=1" \
                 -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                 -e XAUTHORITY \
@@ -22,7 +22,7 @@ else
 
     echo "[!] If you wanna use nvidia gpu, please use script with -n or --nvidia argument"
     docker run  -ti --rm \
-                -e DISPLAY=host.docker.internal:0 \
+                -e "DISPLAY" \
                 -e "QT_X11_NO_MITSHM=1" \
                 -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                 -e XAUTHORITY \

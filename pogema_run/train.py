@@ -22,15 +22,15 @@ parser.add_argument('--headless',
 
 parser.add_argument('-t', '--tsteps', 
                     type=float, 
-                    default=10e6,
+                    default=100e6,
                     help='number of timesteps (default: 1e6)')
 
 # Define random configuration
 grid_config = GridConfig(num_agents=1, # количество агентов на карте
-                         size=2,      # размеры карты
-                         density=0.3,  # плотность препятствий
-                         seed=1,       # сид генерации задания 
-                         max_episode_steps=256,  # максимальная длина эпизода
+                         size=64,      # размеры карты
+                         density = 0.4,  # плотность препятствий
+                         seed=None,       # сид генерации задания 
+                         max_episode_steps=200,  # максимальная длина эпизода
                          obs_radius=5, # радиус обзора
                         )
 
@@ -46,10 +46,10 @@ if __name__ == "__main__":
     from wrappers.labirinth import Wrapper as BASISwrapper
 
 
-    env = gym.make("Pogema-8x8-easy-v0", integration="SampleFactory",)
+    env = gym.make("Pogema-v0", grid_config=grid_config)
     
-    #from hyperparams import PPO1 as hyperparams
-    from hyperparams import A2C1 as hyperparams
+    from hyperparams import PPO1 as hyperparams
+    #from hyperparams import A2C1 as hyperparams
     if args is not None:
         headless = args.headless
 
@@ -73,10 +73,10 @@ if __name__ == "__main__":
 
     train_env.reset()
 
-    model = A2C('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
-
+    #model = PPO('MultiInputPolicy', train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
+    model = PPO.load("models.zip", env=train_env, verbose=1, tensorboard_log=tensorboard_path, **hyperparams)
     try:
-        model.learn(N_TIMESTEPS, callback=callbacks)
+        model.learn(N_TIMESTEPS, callback=callbacks,  reset_num_timesteps = False)
     except KeyboardInterrupt:
         pass
     print(f"Saving to {save_path}.zip")

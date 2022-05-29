@@ -104,7 +104,8 @@ class Wrapper(gym.Wrapper):
         self.steps += 1
         action = action[0]
 
-        actions = self.solver.act(self.state, [0] * len(self.state), self.env.get_agents_xy_relative(), self.env.get_targets_xy_relative())
+        #actions = self.solver.act(self.state, [0] * len(self.state), self.env.get_agents_xy_relative(), self.env.get_targets_xy_relative())
+        actions = [np.random.randint(0, 5) for i in range(30)]
         actions[0] = action
         next_state, reward, done, info = self.env.step(actions)
         self.state = next_state
@@ -152,7 +153,7 @@ class Wrapper(gym.Wrapper):
         for i in self.grid.finishes_xy[1:]:
             image[i[0]][i[1]] = [0, 50, 25]
         
-        cv.imshow("field", cv.resize(image, (400, 400), interpolation = cv.INTER_AREA))
+        cv.imshow("field", cv.resize(image, (1600, 1600), interpolation = cv.INTER_AREA))
         #cv.imshow("field", image)
         cv.waitKey(1)
 

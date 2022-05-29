@@ -170,7 +170,7 @@ def main():
                                                       env.get_agents_xy_relative(),
                                                       env.get_targets_xy_relative()))
         steps += 1
-        print(steps, np.sum(done))
+        print(f"({steps}; {np.sum(done)})")
         render(env.grid)
     # сохраняем анимацию и рисуем ее
     env.save_animation("render.svg", egocentric_idx=None)

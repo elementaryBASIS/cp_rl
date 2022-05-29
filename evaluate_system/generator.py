@@ -28,7 +28,7 @@ class Generator():
         self.configurator = configurator
         self.currentConfig = {}
 
-        self.file = open('log.txt', 'a')
+        self.file = open('evaluate_system/log.txt', 'a')
         self.saveEvery = 10
         self.saveCounter = 0
 

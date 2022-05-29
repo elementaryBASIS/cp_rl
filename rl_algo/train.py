@@ -26,8 +26,8 @@ parser.add_argument('-t', '--tsteps',
                     help='number of timesteps (default: 1e6)')
 
 # Define random configuration
-grid_config = GridConfig(num_agents=10, # количество агентов на карте
-                         size=15,      # размеры карты
+grid_config = GridConfig(num_agents=30, # количество агентов на карте
+                         size=32,      # размеры карты
                          density = 0.35,  # плотность препятствий
                          seed=None,       # сид генерации задания 
                          max_episode_steps=256,  # максимальная длина эпизода

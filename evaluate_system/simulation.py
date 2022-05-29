@@ -3,7 +3,7 @@ from pogema import GridConfig
 import gym
 from pogema.animation import AnimationMonitor
 import statistics
-from generator import Generator
+from evaluate_system.generator import Generator
 
 class Simulation:
     def __init__(self, model, input = Generator()):
@@ -56,7 +56,7 @@ class Simulation:
             csr.append(info[0]['metrics']['CSR'])
             isr.extend([info[i]['metrics']['ISR'] for i in range(len(info))])
 
-            print('[INFO][MEAN][',i+1,'] CSR: ', statistics.fmean(csr), ', ISR: ', statistics.fmean(isr))
+            print('[',i+1,'] CSR: ', statistics.fmean(csr), ', ISR: ', statistics.fmean(isr))
 
         print('TOTAL: ')
         print('CSR:', statistics.fmean(csr))

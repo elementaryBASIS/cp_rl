@@ -2,7 +2,7 @@ import numpy as np
 from pogema import GridConfig
 
 class FileReader():
-    def __init__(self, file = 'log.txt'):
+    def __init__(self, file = 'evaluate_system/log.txt'):
         self.currentConfig = {}
         self.file = open(file, 'r')
         
@@ -40,5 +40,5 @@ class FileReader():
         return gridConfig
 
     def evaluateCurrentTest(self, mark):
-        print('[INFO][COMPARISON]', mark-self.currentConfig['last_result'])
+        # print('[INFO][COMPARISON]', mark-self.currentConfig['last_result'])
         return

@@ -27,10 +27,10 @@ parser.add_argument('-t', '--tsteps',
 
 # Define random configuration
 grid_config = GridConfig(num_agents=10, # количество агентов на карте
-                         size=20,      # размеры карты
+                         size=15,      # размеры карты
                          density = 0.35,  # плотность препятствий
                          seed=None,       # сид генерации задания 
-                         max_episode_steps=150,  # максимальная длина эпизода
+                         max_episode_steps=256,  # максимальная длина эпизода
                          obs_radius=5, # радиус обзора
                         )
 

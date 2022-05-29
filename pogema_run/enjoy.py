@@ -33,8 +33,8 @@ def play_episode(episode_id, headless = False):
     return episode_reward, episode_length, is_success
 
 # Define random configuration
-grid_config = GridConfig(num_agents=1, # количество агентов на карте
-                         size=64,      # размеры карты
+grid_config = GridConfig(num_agents=10, # количество агентов на карте
+                         size=15,      # размеры карты
                          density = 0.35,  # плотность препятствий
                          seed=None,       # сид генерации задания 
                          max_episode_steps=100,  # максимальная длина эпизода
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     enjoy_env.reset()
 
-    model = PPO.load("models.zip", env=enjoy_env)
+    model = PPO.load("models/best_model.zip")
 
     try:
         # Use deterministic actions for evaluation

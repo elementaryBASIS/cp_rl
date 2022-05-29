@@ -4,6 +4,7 @@ import cv2 as cv
 from pogema import GridConfig
 from pogema.grid import Grid
 from heapq import heappop, heappush
+from model import Model
 class Node:
     def __init__(self, coord: (int, int) = (0, 0), g: int = 0, h: int = 0):
         self.i, self.j = coord
@@ -88,6 +89,7 @@ class Wrapper(gym.Wrapper):
         self.headless = headless
         self.prev_pos = [0, 0]
         self.prev_prev_pos = [0, 0]
+        self.solver = Model()
         
     def compute_astar(self, map):
 
@@ -97,14 +99,15 @@ class Wrapper(gym.Wrapper):
         astar = {tuple(GridConfig().MOVES[i]): i for i in range(len(GridConfig().MOVES))
             }[(next_node[0] - self.env.get_agents_xy_relative()[0][0], next_node[1] - self.env.get_agents_xy_relative()[0][1])]
         return astar
+
     def step(self, action):
         self.steps += 1
         action = action[0]
-        actions = []
-        for i in range(self.env.config.num_agents):
-            actions.append(np.random.randint(0, 5))
+
+        actions = self.solver.act(self.state, [0] * len(self.state), self.env.get_agents_xy_relative(), self.env.get_targets_xy_relative())
         actions[0] = action
         next_state, reward, done, info = self.env.step(actions)
+        self.state = next_state
 
         astar = [self.compute_astar( next_state[0])]
         vec2targ = np.array(self.env.get_targets_xy_relative()[0]) - np.array(self.env.get_agents_xy_relative()[0])
@@ -112,18 +115,21 @@ class Wrapper(gym.Wrapper):
         # self.compute_astar( next_state[0])
         #print(state)
         observation = {'observation': state}
+
         #print(observation)
         #rew = -np.linalg.norm(np.array(self.env.get_targets_xy()[0]) - np.array(self.env.get_agents_xy()[0])) + self.delta - self.steps * 0.1
         #print(rew)
-        rew = reward[0] * 100 - self.steps
-        #if self.prev_pos[0] == self.env.get_agents_xy()[0][0] and self.prev_pos[1] == self.env.get_agents_xy()[0][1]:
-        #    rew -= 0.1
-        #elif self.prev_prev_pos[0] == self.env.get_agents_xy()[0][0] and self.prev_prev_pos[1] == self.env.get_agents_xy()[0][1]:
-        #    rew -= 0.1
+        rew = reward[0] * 100
+        if action != astar[0]:
+            rew -= 0.1
+        if self.prev_pos[0] == self.env.get_agents_xy()[0][0] and self.prev_pos[1] == self.env.get_agents_xy()[0][1]:
+            rew -= 0.1
+        elif self.prev_prev_pos[0] == self.env.get_agents_xy()[0][0] and self.prev_prev_pos[1] == self.env.get_agents_xy()[0][1]:
+            rew -= 0.1
 
 
-        #self.prev_prev_pos = self.prev_pos.copy()
-        #self.prev_pos = np.array(self.env.get_agents_xy()[0])
+        self.prev_prev_pos = self.prev_pos.copy()
+        self.prev_pos = np.array(self.env.get_agents_xy()[0])
         
         #print(astar_move, action, astar_move == action)
         for i in range(len(info)):
@@ -152,6 +158,7 @@ class Wrapper(gym.Wrapper):
 
     def reset(self, **kwargs):
         state = self.env.reset(**kwargs)
+        self.state = state
         self.steps = 0
         self.delta = np.linalg.norm(np.array(self.env.get_targets_xy()[0]) - np.array(self.env.get_agents_xy()[0]))
         self.astar = AStar()

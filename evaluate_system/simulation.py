@@ -3,66 +3,26 @@ from pogema import GridConfig
 import gym
 from pogema.animation import AnimationMonitor
 import statistics
-
-class Config:
-    def __init__(self, 
-                min_agents = 1, 
-                max_agents = 32,
-                min_density = 0.2,
-                max_density = 0.4,
-                min_size = 8,
-                max_size = 64,
-                obs_radius = 5,
-                max_episode_steps = 256):
-
-        self.min_agents = min_agents
-        self.max_agents = max_agents if max_agents > min_agents else min_agents
-        self.min_density = min_density
-        self.max_density = max_density if max_density > min_density else min_density
-        self.min_size = min_size
-        self.max_size = max_size if max_size > min_size else min_size
-        self.obs_radius = obs_radius
-        self.max_episode_steps = max_episode_steps
-
+from generator import Generator
 
 class Simulation:
-    def __init__(self, model, config = Config()):
+    def __init__(self, model, input = Generator()):
         self.modelClass = model
-        self.config = config
-
-    def __generateConfig(self):
-
-        num_agents = np.random.randint(self.config.min_agents, self.config.max_agents+1)
-        density = np.random.uniform(self.config.min_density, self.config.max_density+0.001)
-        size = np.random.randint(self.config.min_size, self.config.max_size+1)
-        
-        if num_agents >= int(size*density):
-            num_agents = size*density//np.random.randint(1,3)
-            num_agents = num_agents if num_agents > 0 else 1 
-        
-        return GridConfig(num_agents=num_agents,
-                        size=size,
-                        density=density,
-                        seed=np.random.randint(100000),
-                        max_episode_steps=self.config.max_episode_steps,
-                        obs_radius=self.config.obs_radius,
-                        )
+        self.input = input
+        self.stopFlag = False
 
     def simulate(self):
 
-        grid_config = 0
-
-        while True:
-            try:
-                grid_config = self.__generateConfig()
-                env = gym.make("Pogema-v0", grid_config=grid_config)
-                env = AnimationMonitor(env)
-                obs = env.reset()
-                break
-            except OverflowError:
-                continue
+        grid_config = self.input.next()
         
-        print('[INFO][EPOCH CONFIG]', grid_config)
+        if grid_config == None:
+            self.stopFlag = True
+            return
+
+        env = gym.make("Pogema-v0", grid_config=grid_config)
+        obs = env.reset()
+        
+        #print('[INFO][EPOCH CONFIG]', grid_config)
 
         solver = self.modelClass()
         done = [False for k in range(len(obs))]
@@ -83,16 +43,20 @@ class Simulation:
 
         for i in range(epochs):
 
-            while True:
-                try:
-                    info = self.simulate()
-                    break
-                except IndexError:
-                    continue
+            info = self.simulate()
 
-            print('[INFO][EPOCH][',i+1,'] Result: ', info)
+            if self.stopFlag:
+                print('Stop flag')
+                return
+
+            self.input.evaluateCurrentTest(statistics.fmean([info[i]['metrics']['ISR'] for i in range(len(info))]))
+
+            #print('[INFO][EPOCH][',i+1,'] Result: ', info)
+
             csr.append(info[0]['metrics']['CSR'])
             isr.extend([info[i]['metrics']['ISR'] for i in range(len(info))])
+
+            print('[INFO][MEAN][',i+1,'] CSR: ', statistics.fmean(csr), ', ISR: ', statistics.fmean(isr))
 
         print('TOTAL: ')
         print('CSR:', statistics.fmean(csr))

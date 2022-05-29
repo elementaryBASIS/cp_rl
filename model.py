@@ -19,7 +19,7 @@ class Model:
                 continue
 
             new_agents = np.zeros([11,11],dtype=float)
-            if (random() >= 0.4):
+            if (random() >= 0.5):
                 self.agents[k].update_obstacles(obs[k][0], obs[k][1], (positions_xy[k][0] - 5, positions_xy[k][1] - 5))
             else:
                 self.agents[k].update_obstacles(obs[k][0], new_agents, (positions_xy[k][0] - 5, positions_xy[k][1] - 5))
